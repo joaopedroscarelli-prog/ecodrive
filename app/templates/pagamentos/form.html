@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Novo Pagamento{% endblock %}
+{% block page_title %}Novo Pagamento{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-lg-6">
+<div class="card">
+    <div class="card-header-bar">
+        <h6 class="mb-0 fw-semibold">
+            <i class="bi bi-cash-stack me-2 text-success"></i>Registrar Pagamento
+        </h6>
+        <a href="{{ url_for('pagamentos.lista') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Voltar
+        </a>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST" action="{{ url_for('pagamentos.novo') }}">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label fw-semibold small">Aluno *</label>
+                    <select name="aluno_id" class="form-select" required>
+                        <option value="">Selecione o aluno...</option>
+                        {% for aluno in alunos %}
+                        <option value="{{ aluno.id }}">{{ aluno.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Tipo</label>
+                    <select name="tipo" class="form-select">
+                        <option value="mensalidade">Mensalidade</option>
+                        <option value="taxa_detran">Taxa Detran</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="pendente">Pendente</option>
+                        <option value="pago">Pago</option>
+                        <option value="vencido">Vencido</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Valor (R$) *</label>
+                    <input type="number" step="0.01" min="0" name="valor"
+                           class="form-control" placeholder="0,00" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Data de Vencimento *</label>
+                    <input type="date" name="data_vencimento" class="form-control" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold small">Descrição</label>
+                    <input type="text" name="descricao" class="form-control"
+                           placeholder="Ex: Mensalidade março/2025">
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-4 pt-2 border-top">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg me-1"></i>Registrar
+                </button>
+                <a href="{{ url_for('pagamentos.lista') }}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}

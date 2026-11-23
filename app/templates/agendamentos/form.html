@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if agendamento else 'Novo' }} Agendamento{% endblock %}
+{% block page_title %}{{ 'Editar Agendamento' if agendamento else 'Novo Agendamento' }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-lg-8">
+<div class="card">
+    <div class="card-header-bar">
+        <h6 class="mb-0 fw-semibold">
+            <i class="bi bi-calendar3 me-2 text-success"></i>
+            {{ 'Editar Agendamento #' + agendamento.id|string if agendamento else 'Criar Agendamento' }}
+        </h6>
+        <a href="{{ url_for('agendamentos.lista') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Voltar
+        </a>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST"
+              action="{{ url_for('agendamentos.editar', id=agendamento.id) if agendamento else url_for('agendamentos.novo') }}">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Aluno *</label>
+                    <select name="aluno_id" class="form-select" required>
+                        <option value="">Selecione o aluno...</option>
+                        {% for aluno in alunos %}
+                        <option value="{{ aluno.id }}"
+                            {% if agendamento and agendamento.aluno_id == aluno.id %}selected{% endif %}>
+                            {{ aluno.nome }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Instrutor *</label>
+                    <select name="instrutor_id" class="form-select" required>
+                        <option value="">Selecione o instrutor...</option>
+                        {% for inst in instrutores %}
+                        <option value="{{ inst.id }}"
+                            {% if agendamento and agendamento.instrutor_id == inst.id %}selected{% endif %}>
+                            {{ inst.nome }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small">Tipo de Aula *</label>
+                    <select name="tipo" class="form-select" required>
+                        <option value="teorica" {% if agendamento and agendamento.tipo == 'teorica' %}selected{% endif %}>Teórica</option>
+                        <option value="pratica" {% if agendamento and agendamento.tipo == 'pratica' %}selected{% endif %}>Prática</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small">Data e Hora *</label>
+                    <input type="datetime-local" name="data_hora" class="form-control"
+                           value="{{ agendamento.data_hora.strftime('%Y-%m-%dT%H:%M') if agendamento else '' }}"
+                           required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small">Status</label>
+                    <select name="status" class="form-select">
+                        {% for val, label in [('agendado','Agendado'),('confirmado','Confirmado'),('concluido','Concluído'),('cancelado','Cancelado')] %}
+                        <option value="{{ val }}"
+                            {% if agendamento and agendamento.status == val %}selected
+                            {% elif not agendamento and val == 'agendado' %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold small">Veículo</label>
+                    <select name="veiculo_id" class="form-select">
+                        <option value="">— Sem veículo (aula teórica) —</option>
+                        {% for v in veiculos %}
+                        <option value="{{ v.id }}"
+                            {% if agendamento and agendamento.veiculo_id == v.id %}selected{% endif %}>
+                            {{ v.placa }} — {{ v.modelo }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold small">Observações</label>
+                    <textarea name="observacoes" class="form-control" rows="2"
+                              placeholder="Opcional...">{{ agendamento.observacoes if agendamento and agendamento.observacoes else '' }}</textarea>
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-4 pt-2 border-top">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg me-1"></i>{{ 'Salvar' if agendamento else 'Criar agendamento' }}
+                </button>
+                <a href="{{ url_for('agendamentos.lista') }}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}

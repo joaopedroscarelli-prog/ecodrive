@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if veiculo else 'Novo' }} Veículo{% endblock %}
+{% block page_title %}{{ 'Editar Veículo' if veiculo else 'Novo Veículo' }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-lg-7">
+<div class="card">
+    <div class="card-header-bar">
+        <h6 class="mb-0 fw-semibold">
+            <i class="bi bi-car-front-fill me-2 text-success"></i>
+            {{ 'Editar ' + veiculo.placa if veiculo else 'Cadastrar Veículo' }}
+        </h6>
+        <a href="{{ url_for('veiculos.lista') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Voltar
+        </a>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST"
+              action="{{ url_for('veiculos.editar', id=veiculo.id) if veiculo else url_for('veiculos.novo') }}">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small">Placa *</label>
+                    <input type="text" name="placa" class="form-control text-uppercase font-monospace"
+                           value="{{ veiculo.placa if veiculo else '' }}"
+                           {% if veiculo %}readonly{% endif %} required maxlength="8">
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold small">Modelo *</label>
+                    <input type="text" name="modelo" class="form-control"
+                           value="{{ veiculo.modelo if veiculo else '' }}" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small">Tipo</label>
+                    <select name="tipo" class="form-select">
+                        <option value="carro" {% if veiculo and veiculo.tipo == 'carro' %}selected{% endif %}>Carro</option>
+                        <option value="moto" {% if veiculo and veiculo.tipo == 'moto' %}selected{% endif %}>Moto</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Situação</label>
+                    <select name="situacao" class="form-select">
+                        <option value="ativo" {% if veiculo and veiculo.situacao == 'ativo' %}selected{% endif %}>Ativo</option>
+                        <option value="inativo" {% if veiculo and veiculo.situacao == 'inativo' %}selected{% endif %}>Inativo</option>
+                        <option value="manutencao" {% if veiculo and veiculo.situacao == 'manutencao' %}selected{% endif %}>Manutenção</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Data da Vistoria</label>
+                    <input type="date" name="data_vistoria" class="form-control"
+                           value="{{ veiculo.data_vistoria.strftime('%Y-%m-%d') if veiculo and veiculo.data_vistoria else '' }}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold small">Instrutor Responsável</label>
+                    <select name="instrutor_id" class="form-select">
+                        <option value="">— Sem instrutor —</option>
+                        {% for inst in instrutores %}
+                        <option value="{{ inst.id }}"
+                            {% if veiculo and veiculo.instrutor_id == inst.id %}selected{% endif %}>
+                            {{ inst.nome }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-4 pt-2 border-top">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg me-1"></i>{{ 'Salvar' if veiculo else 'Cadastrar' }}
+                </button>
+                <a href="{{ url_for('veiculos.lista') }}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}

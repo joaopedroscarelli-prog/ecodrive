@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl">
+        <div class="card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-people-fill"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold lh-1">{{ stats.total_alunos }}</div>
+                    <div class="text-muted small mt-1">Alunos Ativos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-success bg-opacity-10 text-success"><i class="bi bi-person-badge-fill"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold lh-1">{{ stats.total_instrutores }}</div>
+                    <div class="text-muted small mt-1">Instrutores</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-car-front-fill"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold lh-1">{{ stats.total_veiculos }}</div>
+                    <div class="text-muted small mt-1">Veículos Ativos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-info bg-opacity-10 text-info"><i class="bi bi-calendar3"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold lh-1">{{ stats.agendamentos_hoje }}</div>
+                    <div class="text-muted small mt-1">Aulas Hoje</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl">
+        <div class="card h-100">
+            <div class="card-body d-flex align-items-center gap-3">
+                <div class="stat-icon bg-danger bg-opacity-10 text-danger"><i class="bi bi-cash-stack"></i></div>
+                <div>
+                    <div class="fs-3 fw-bold lh-1">{{ stats.pagamentos_pendentes }}</div>
+                    <div class="text-muted small mt-1">Pag. Pendentes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent agendamentos -->
+<div class="card">
+    <div class="card-header-bar">
+        <h6 class="mb-0 fw-semibold">Agendamentos Recentes</h6>
+        <a href="{{ url_for('agendamentos.lista') }}" class="btn btn-sm btn-outline-primary">Ver todos</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-4">Aluno</th>
+                    <th>Instrutor</th>
+                    <th>Tipo</th>
+                    <th>Data / Hora</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ag in agendamentos_recentes %}
+                <tr>
+                    <td class="ps-4 fw-medium">{{ ag.aluno.nome }}</td>
+                    <td>{{ ag.instrutor.nome }}</td>
+                    <td>
+                        {% if ag.tipo == 'pratica' %}
+                            <span class="badge bg-primary">Prática</span>
+                        {% else %}
+                            <span class="badge bg-info text-dark">Teórica</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ ag.data_hora.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>
+                        {% if ag.status == 'agendado' %}<span class="badge bg-secondary">Agendado</span>
+                        {% elif ag.status == 'confirmado' %}<span class="badge bg-primary">Confirmado</span>
+                        {% elif ag.status == 'concluido' %}<span class="badge bg-success">Concluído</span>
+                        {% elif ag.status == 'cancelado' %}<span class="badge bg-danger">Cancelado</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">Nenhum agendamento cadastrado ainda.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

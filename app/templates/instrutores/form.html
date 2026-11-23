@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if instrutor else 'Novo' }} Instrutor{% endblock %}
+{% block page_title %}{{ 'Editar Instrutor' if instrutor else 'Novo Instrutor' }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-lg-7">
+<div class="card">
+    <div class="card-header-bar">
+        <h6 class="mb-0 fw-semibold">
+            <i class="bi bi-person-badge-fill me-2 text-success"></i>
+            {{ 'Editar ' + instrutor.nome if instrutor else 'Cadastrar Instrutor' }}
+        </h6>
+        <a href="{{ url_for('instrutores.lista') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Voltar
+        </a>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST"
+              action="{{ url_for('instrutores.editar', id=instrutor.id) if instrutor else url_for('instrutores.novo') }}">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label fw-semibold small">Nome Completo *</label>
+                    <input type="text" name="nome" class="form-control"
+                           value="{{ instrutor.nome if instrutor else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">CPF *</label>
+                    <input type="text" name="cpf" class="form-control" maxlength="14"
+                           value="{{ instrutor.cpf if instrutor else '' }}"
+                           {% if instrutor %}readonly{% endif %} required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Matrícula</label>
+                    <input type="text" name="matricula" class="form-control"
+                           value="{{ instrutor.matricula if instrutor and instrutor.matricula else '' }}"
+                           {% if instrutor %}readonly{% endif %}>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Especialidade</label>
+                    <select name="especialidade" class="form-select">
+                        {% for val, label in [('teorica','Teórica'),('pratica','Prática'),('ambas','Ambas')] %}
+                        <option value="{{ val }}"
+                            {% if instrutor and instrutor.especialidade == val %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small">Telefone</label>
+                    <input type="text" name="telefone" class="form-control"
+                           value="{{ instrutor.telefone if instrutor and instrutor.telefone else '' }}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold small">E-mail</label>
+                    <input type="email" name="email" class="form-control"
+                           value="{{ instrutor.email if instrutor and instrutor.email else '' }}">
+                </div>
+            </div>
+            <div class="d-flex gap-2 mt-4 pt-2 border-top">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg me-1"></i>
+                    {{ 'Salvar' if instrutor else 'Cadastrar' }}
+                </button>
+                <a href="{{ url_for('instrutores.lista') }}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}
